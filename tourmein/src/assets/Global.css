@@ -56,6 +56,13 @@ body
   
 }
 
+#Mobile
+{
+    position: absolute;
+    right: 900px;
+    bottom: 100px;
+}
+
 #PTName
 {
     position: absolute;

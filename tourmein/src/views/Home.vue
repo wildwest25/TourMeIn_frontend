@@ -42,6 +42,9 @@
 						<button type="button" @click="login()" class="btn btn-primary">
 							Log In
 						</button>
+						<button id="Mobile" type="button" class="btn btn-primary">
+							Mobile Page (Inactive)
+						</button>
 					</form>
 					<br />
 					<form method="get" action="/register">
