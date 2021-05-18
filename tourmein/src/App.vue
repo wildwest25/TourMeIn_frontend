@@ -18,7 +18,7 @@
 				<div v-if="store.counter" id="MSGCount">{{ store.counter }}</div>
 				|
 				<router-link to="/messages">Messages</router-link> |
-				<router-link to="">Map and Events</router-link>
+				<router-link to="/events">Map and Events</router-link>
 
 				<ul class="navbar-nav ml-auto">
 					<li class="nav-item">
@@ -47,7 +47,7 @@
 				<div v-if="store.counter" id="MSGCount">{{ store.counter }}</div>
 				|
 				<router-link to="/messages">Messages</router-link> |
-				<router-link to="">Map and Events</router-link>
+				<router-link to="/events">Map and Events</router-link>
 
 				<ul class="navbar-nav ml-auto">
 					<li class="nav-item">

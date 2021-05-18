@@ -90,6 +90,14 @@ const routes = [
 		},
 		component: () => import('../views/My_guides.vue'),
 	},
+	{
+		path: '/events',
+		name: 'Events',
+		meta: {
+			needsUser: true,
+		},
+		component: () => import('../views/Events.vue'),
+	},
 ];
 
 const router = new VueRouter({
