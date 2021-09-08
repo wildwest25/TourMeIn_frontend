@@ -33,6 +33,26 @@ let Auth = {
     localStorage.setItem("user", JSON.stringify(user));
     return true;
   },
+
+  async login(email, password) {
+    let response = await Service.post("/auth", {
+      email: email,
+      password: password,
+    });
+    let user = response.data;
+    localStorage.setItem("user", JSON.stringify(user));
+    return true;
+  },
 };
 
-export { Service, Auth };
+let isGuide = {
+  async getOne(email) {
+    let response = await Service.get(`/users/${email}`);
+    let doc = response.data;
+    return {
+      isguide: doc.isguide,
+    };
+  },
+};
+
+export { Service, Auth, isGuide };

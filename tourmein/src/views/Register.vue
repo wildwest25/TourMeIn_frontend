@@ -225,8 +225,8 @@ https://github.com/silviomoreto/bootstrap-select/issues/1135
               <label for="registerAs"> Register as: </label>
               <div class="form-group">
                 <select class="form-control" id="registerAs" v-model="isGuide">
-                  <option value="false">Tourist</option>
-                  <option value="true">Guide</option>
+                  <option value="tourist">Tourist</option>
+                  <option value="guide">Guide</option>
                 </select>
               </div>
               <div class="message">{{ validation.firstError("isGuide") }}</div>
