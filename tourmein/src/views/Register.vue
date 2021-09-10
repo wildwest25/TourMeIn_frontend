@@ -257,6 +257,9 @@ https://github.com/silviomoreto/bootstrap-select/issues/1135
                 I have read and agree with Terms and Conditions Agreement
               </label>
             </div>
+            <span v-if="feedback" style="color:red;font-size:30px;"
+              >E-mail already exist</span
+            >
             <div class="form-group">
               <button
                 type="button"
@@ -300,6 +303,7 @@ export default {
       newfromCountry: "",
       newCity: "",
       isGuide: "",
+      feedback: false,
     };
   },
   validators: {
@@ -390,6 +394,7 @@ export default {
               this.$router.push({ path: "/" });
             }
           } catch (e) {
+            this.feedback = true;
             console.log(e);
           }
         } else {

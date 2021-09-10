@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <navigation v-if="store.isGuide === 'true'"
-      ><!-- Meni vidljivi samo Guide-u -->
+    <div v-if="GUIDE.isguide === 'guide'">
+      <!-- Meni vidljivi samo Guide-u -->
       <div id="nav" class="navbar navbar-expand-md navbar-light">
         <img
           src="@/assets/Logo-01.png"
@@ -21,7 +21,7 @@
         >
         |
         <router-link to="/notifications">Notifications</router-link>
-        <div v-if="store.counter" id="MSGCount">{{ store.counter }}</div>
+        <!-- <div v-if="store.counter" id="MSGCount">{{ store.counter }}</div>-->
         |
         <router-link to="/messages">Messages</router-link> |
         <router-link to="/events">Map and Events</router-link>
@@ -39,9 +39,9 @@
           </li>
         </ul>
       </div>
-    </navigation>
-    <navigation v-if="store.isGuide === 'false'"
-      ><!-- Meni vidljivi samo User-u -->
+    </div>
+    <div v-if="GUIDE.isguide === 'tourist'">
+      <!-- Meni vidljivi samo User-u -->
       <div id="nav" class="navbar navbar-expand-md navbar-light">
         <img
           src="@/assets/Logo-01.png"
@@ -57,7 +57,7 @@
         | <router-link to="/UserPage">Search Guides</router-link> |
         <router-link to="/my_guides">My Guides</router-link> |
         <router-link to="/notifications">Notifications</router-link>
-        <div v-if="store.counter" id="MSGCount">{{ store.counter }}</div>
+        <!--<div v-if="store.counter" id="MSGCount">{{ store.counter }}</div>-->
         |
         <router-link to="/messages">Messages</router-link> |
         <router-link to="/events">Map and Events</router-link>
@@ -75,7 +75,7 @@
           </li>
         </ul>
       </div>
-    </navigation>
+    </div>
 
     <router-view />
   </div>
@@ -85,16 +85,35 @@
 import store from "@/store";
 import { firebase, db } from "@/firebase";
 import router from "@/router";
+import { Auth, isGuide } from "../src/service/index.js";
 
 export default {
   name: "app",
   data() {
     return {
       store,
+      GUIDE: {},
+      auth: Auth.state,
     };
   },
 
-  methods: {},
+  mounted() {
+    this.callBackendGuide();
+    console.log("Ovo bi se trebalo ucitat kad stisnem login al jede govna ");
+  },
+
+  methods: {
+    async callBackendGuide() {
+      this.GUIDE = await isGuide.getOne(this.auth.userEmail);
+
+      console.log(this.GUIDE.isguide);
+    },
+
+    logout() {
+      Auth.logout();
+      this.$router.go();
+    },
+  },
 };
 </script>
 

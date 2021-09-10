@@ -115,12 +115,12 @@ export default {
           try {
             let uspjeh = await Auth.login(this.email, this.password);
             console.log("Rezultat prijave", uspjeh);
-            console.log(this.GUIDE.isguide);
+            //console.log(this.GUIDE.isguide);
             if (uspjeh) {
               if (this.GUIDE.isguide == "tourist") {
-                this.$router.push({ path: "/UserPage" });
-              } else this.$router.push({ path: "/Guide_profile" });
-            } else console.log("najebo si ga");
+                this.$router.replace({ path: "/UserPage" });
+              } else this.$router.replace({ path: "/Guide_profile" });
+            } else console.log("nista");
           } catch (e) {
             console.log(e);
             this.showError = true;

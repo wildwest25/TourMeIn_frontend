@@ -1,6 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import store from "@/store";
+import { Auth } from "../service/index.js";
 
 Vue.use(VueRouter);
 
@@ -37,9 +38,7 @@ const routes = [
   {
     path: "/my_previous_tours_guide",
     name: "My_previous_tours_guide",
-    meta: {
-      needsUser: true,
-    },
+
     component: () => import("../views/My_previous_tours-guide.vue"),
   },
   {
@@ -78,7 +77,7 @@ const routes = [
     path: "/UserPage",
     name: "UserPage",
     meta: {
-      needsUser: true,
+      reload: true,
     },
     component: () => import("../views/UserPage.vue"),
   },
@@ -104,6 +103,18 @@ const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  const javneStranice = ["/", "/register"];
+  const loginPotreban = !javneStranice.includes(to.path);
+  const user = Auth.getUser();
+
+  if (loginPotreban && !user) {
+    next("/");
+    return;
+  }
+  next();
 });
 
 export default router;

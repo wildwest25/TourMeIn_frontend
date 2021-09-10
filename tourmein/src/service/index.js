@@ -6,6 +6,21 @@ let Service = axios.create({
   headers: { Accept: "application/json", "Content-Type": "application/json" },
 });
 
+let isGuide = {
+  async getOne(email) {
+    let response = await Service.get(`/users/${email}`);
+    let doc = response.data;
+    return {
+      isguide: doc.isguide,
+      phone: doc.phone,
+      languages: doc.languages,
+      ivisited: doc.ivisited,
+      wouldvisit: doc.wouldvisit,
+      aboutme: doc.aboutme,
+    };
+  },
+};
+
 let Auth = {
   async register(
     email,
@@ -39,19 +54,50 @@ let Auth = {
       email: email,
       password: password,
     });
+
     let user = response.data;
+
     localStorage.setItem("user", JSON.stringify(user));
+
     return true;
   },
-};
 
-let isGuide = {
-  async getOne(email) {
-    let response = await Service.get(`/users/${email}`);
-    let doc = response.data;
-    return {
-      isguide: doc.isguide,
-    };
+  logout() {
+    localStorage.removeItem("user");
+  },
+
+  getUser() {
+    return JSON.parse(localStorage.getItem("user"));
+  },
+
+  getToken() {
+    let user = Auth.getUser();
+    if (user && user.token) {
+      return user.token;
+    } else {
+      return false;
+    }
+  },
+
+  prijavljen() {
+    let user = Auth.getUser();
+    if (user && user.token) {
+      return true;
+    }
+    return false;
+  },
+
+  state: {
+    get prijavljen() {
+      return Auth.prijavljen();
+    },
+
+    get userEmail() {
+      let user = Auth.getUser();
+      if (user) {
+        return user.email;
+      }
+    },
   },
 };
 
