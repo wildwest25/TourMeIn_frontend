@@ -59,6 +59,7 @@
                 id="InputEmail"
                 aria-describedby="emailHelp"
                 value=""
+                v-model="auth.userEmail"
               />
             </div>
             <div class="form-group">
@@ -465,7 +466,7 @@
 <script>
 import store from "@/store";
 import { db, storage } from "@/firebase"; // osim db ovdje importamo i storage jer su u njemu spremljene slike profila
-import { Auth, isGuide } from "../service/index.js";
+import { Auth, isGuide, Service } from "../service/index.js";
 
 export default {
   name: "Guide_functions",
@@ -485,18 +486,18 @@ export default {
       registered: "",
       newLanguages: "",
       newMonuments: "",
-      newStartHour: 0,
-      newStartMinute: 0,
-      newEndHour: 0,
-      newEndMinute: 0,
+      newStartHour: "",
+      newStartMinute: "",
+      newEndHour: "",
+      newEndMinute: "",
 
-      newMonday: "false", //postavljamo sve ove vrijednosti na false kako ne bi bile pre-selectane
-      newTuesday: "false",
-      newWednesday: "false",
-      newThursday: "false",
-      newFriday: "false",
-      newSaturday: "false",
-      newSunday: "false",
+      newMonday: "", //postavljamo sve ove vrijednosti na false kako ne bi bile pre-selectane
+      newTuesday: "",
+      newWednesday: "",
+      newThursday: "",
+      newFriday: "",
+      newSaturday: "",
+      newSunday: "",
 
       newperHour: "",
       newperLandmark: "",
@@ -523,145 +524,86 @@ export default {
   },
   methods: {
     //za dohvaćanje podataka sa Firebasea
-    getUserInfo() {
-      console.log("firebase dohvat...");
+    async getUserInfo() {
+      console.log("Dohvat podataka s MongoDB-a...");
+      this.UserInfo = await isGuide.getOne(this.auth.userEmail);
+      this.firstname = this.UserInfo.firstname;
+      this.lastname = this.UserInfo.lastname;
+      //this.registered = new Date(this.UserInfo.registered_at).toLocaleDateString();
 
-      db.collection("user")
-        .where("email", "==", store.currentUser)
-        .get()
-        .then((querySnapshot) => {
-          //querySnapshot služi da dohvaća željene podatke/dokumente za usera kojeg je pronašao
-          querySnapshot.forEach((doc) => {
-            // doc.data() is never undefined for query doc snapshots
-            console.log(doc.id, " => ", doc.data());
+      this.newPhoneNumber = this.UserInfo.phone;
+      this.newLanguages = this.UserInfo.languages;
+      this.newMonuments = this.UserInfo.monuments;
+      this.newStartHour = this.UserInfo.starthour;
+      this.newStartMinute = this.UserInfo.startminute;
+      this.newEndHour = this.UserInfo.endhour;
+      this.newEndMinute = this.UserInfo.endminute;
 
-            const data = doc.data();
+      this.newMonday = this.UserInfo.monday;
+      this.newTuesday = this.UserInfo.tuesday;
+      this.newWednesday = this.UserInfo.wednesday;
+      this.newThursday = this.UserInfo.thursday;
+      this.newFriday = this.UserInfo.friday;
+      this.newSaturday = this.UserInfo.saturday;
+      this.newSunday = this.UserInfo.sunday;
 
-            this.id = doc.id;
+      this.newperHour = this.UserInfo.perhour;
+      this.newperLandmark = this.UserInfo.perlandmark;
+      this.newcostPerHour = this.UserInfo.costhour;
+      this.newcostPerLandmark = this.UserInfo.costlandmark;
 
-            this.imageisHere = data.image;
-            this.firstname = data.firstname;
-            this.lastname = data.lastname;
-            this.registered = new Date(data.registered_at).toLocaleDateString();
+      this.newCurrency = this.UserInfo.currency;
+      this.newaboutMe = this.UserInfo.aboutme;
+      this.dob = this.UserInfo.dob;
 
-            this.newPhoneNumber = data.phone;
-            this.newLanguages = data.languages;
-            this.newMonuments = data.monuments;
-            this.newStartHour = data.starthour;
-            this.newStartMinute = data.startminute;
-            this.newEndHour = data.endhour;
-            this.newEndMinute = data.endminute;
+      this.newFBlink = this.UserInfo.fblink;
+      this.newTwitterlink = this.UserInfo.twlink;
+      this.newInstalink = this.UserInfo.instalink;
 
-            this.newMonday = data.monday;
-            this.newTuesday = data.tuesday;
-            this.newWednesday = data.wednesday;
-            this.newThursday = data.thursday;
-            this.newFriday = data.friday;
-            this.newSaturday = data.saturday;
-            this.newSunday = data.sunday;
-
-            this.newperHour = data.perhour;
-            this.newperLandmark = data.perlandmark;
-            this.newcostPerHour = data.costhour;
-            this.newcostPerLandmark = data.costlandmark;
-
-            this.newCurrency = data.currency;
-            this.newaboutMe = data.aboutme;
-            this.dob = data.dob;
-
-            this.newFBlink = data.fblink;
-            this.newTwitterlink = data.twlink;
-            this.newInstalink = data.instalink;
-
-            const calc = data.rated / data.ratedusers;
-            this.ratedpreview = calc.toFixed(2); // jer nece kad je direktno u div
-
-            document.getElementById("InputEmail").value = store.currentUser;
-            //document.getElementById('exampleContact').value = data.phone;
-
-            //* Asinkrona funckcija za dohvaćanje slike (kako bi očitalo sliku na vrijeme i pravilno)
-            var img = new Image();
-            img.onload = (e) => {
-              //kad je učitana slika da ju pusha na stranicu
-              this.image = img;
-            };
-            img.src = data.image;
-            console.log("Imageishere", this.imageisHere);
-          });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
+      //const calc = data.rated / data.ratedusers;
+      //this.ratedpreview = calc.toFixed(2); // /ove dvije linije su za prikaz ocjene, trneutno ne rade)
     },
 
     saveNewInfo() {
-      //kako se podaci ne bi mijenjali bez saveanja
-      const phone = this.newPhoneNumber;
-      const languages = this.newLanguages;
-      const monuments = this.newMonuments;
-      const starthour = this.newStartHour;
-      const startminute = this.newStartMinute;
-      const endhour = this.newEndHour;
-      const endminute = this.newEndMinute;
+      let newData = {
+        phone: this.newPhoneNumber,
+        languages: this.newLanguages,
+        monuments: this.newMonuments,
+        starthour: this.newStartHour,
+        startminute: this.newStartMinute,
+        endhour: this.newEndHour,
+        endminute: this.newEndMinute,
 
-      const monday = this.newMonday;
-      const tuesday = this.newTuesday;
-      const wednesday = this.newWednesday;
-      const thursday = this.newThursday;
-      const friday = this.newFriday;
-      const saturday = this.newSaturday;
-      const sunday = this.newSunday;
+        monday: this.newMonday,
+        tuesday: this.newTuesday,
+        wednesday: this.newWednesday,
+        thursday: this.newThursday,
+        friday: this.newFriday,
+        saturday: this.newSaturday,
+        sunday: this.newSunday,
 
-      const perhour = this.newperHour;
-      const perlandmark = this.newperLandmark;
-      const costhour = this.newcostPerHour;
-      const costlandmark = this.newcostPerLandmark;
-      const currency = this.newCurrency;
-      const aboutme = this.newaboutMe;
+        perhour: this.newperHour,
+        perlandmark: this.newperLandmark,
+        costhour: this.newcostPerHour,
+        costlandmark: this.newcostPerLandmark,
+        currency: this.newCurrency,
+        aboutme: this.newaboutMe,
 
-      const fblink = this.newFBlink;
-      const twlink = this.newTwitterlink;
-      const instalink = this.newInstalink;
+        fblink: this.newFBlink,
+        twlink: this.newTwitterlink,
+        instalink: this.newInstalink,
+      };
 
-      db.collection("user")
-        .doc(this.id)
-        .update({
-          //funkcija za update podataka nakon eventualne izmjene/ažuriranja
-          phone: phone,
-          languages: languages,
-          monuments: monuments,
-          starthour: starthour,
-          startminute: startminute,
-          endhour: endhour,
-          endminute: endminute,
+      console.log("NEWDATA", newData);
 
-          monday: monday,
-          tuesday: tuesday,
-          wednesday: wednesday,
-          thursday: thursday,
-          friday: friday,
-          saturday: saturday,
-          sunday: sunday,
-
-          perhour: perhour,
-          perlandmark: perlandmark,
-          costhour: costhour,
-          costlandmark: costlandmark,
-          currency: currency,
-          aboutme: aboutme,
-
-          fblink: fblink,
-          twlink: twlink,
-          instalink: instalink,
-        })
-        .then(() => {
-          console.log("spremljeno, doc"); //vraća nam potvrdu na konzoli da su podaci spremljeni na Firebase
-          alert("You have successfully saved your changes!");
-        })
-        .catch((e) => {
-          console.error(e);
-        });
+      Service.patch(`/users/${this.auth.userEmail}`, newData).then(
+        (response) => {
+          console.log(response);
+          this.$router.go();
+        }
+      );
     },
+
     addImage() {
       this.imageReference.generateBlob((blobData) => {
         //spremanje slike u prikladni "blob" format
