@@ -3,40 +3,8 @@
     <div class="container">
       <div class="row">
         <div class="col-sm">
-          <croppa
-            v-if="image"
-            :width="200"
-            :height="200"
-            :show-loading="true"
-            :initial-image="image"
-            :show-remove-button="false"
-            v-model="imageReference"
-          ></croppa>
-          <!-- croppa je plugin za dodavanje profilne slike vodiča/korisnika i pozicioniranje iste-->
-          <croppa
-            v-if="imageisHere === null"
-            :width="200"
-            :height="200"
-            :show-loading="true"
-            v-model="imageReference"
-          ></croppa>
-          <croppa
-            v-else-if="imageisHere === undefined"
-            :width="200"
-            :height="200"
-            :show-loading="true"
-            v-model="imageReference"
-          ></croppa>
-          <a href="#" class="btn btn-primary" @click="addImage()">Save image</a>
-          <!-- button za spremanje dodane slike na profil vodiča-->
-          <a href="#" class="btn btn-secondary" @click="removeImage()"
-            >Remove image</a
-          >
-          <!-- button za uklanjanje prethodno dodane slike profila -->
-
-          <!--<img src="@/assets/img-thumnail.svg" />-->
           <div class="form-group">
-            <!-- sve unutar ovog div classa je ono što nam piše ispod slike na profilu vodiča (ime i prezime, godine i ocjena)-->
+            <img class="Picture mb-3" :src="Picture" />
             <label for="nameSurname">{{ firstname }} {{ lastname }}</label
             ><br />
             <!-- <label-- for="DOB">{{ dob }}</label-->
@@ -49,6 +17,15 @@
           </div>
         </div>
         <div class="col-fluid">
+          <div class="form-group ">
+            <label for="Picture">Post your picture URL</label>
+            <input
+              type="picture"
+              class="form-control"
+              id="Picture"
+              v-model="Picture"
+            />
+          </div>
           <form>
             <!-- formular za popunjavanje podataka na profilnoj stranici vodiča -->
             <div class="form-group">
@@ -510,6 +487,7 @@ export default {
       newTwitterlink: "",
       newInstalink: "",
       ratedpreview: 0,
+      Picture: "",
     };
   },
   mounted() {
@@ -559,6 +537,7 @@ export default {
       this.newFBlink = this.UserInfo.fblink;
       this.newTwitterlink = this.UserInfo.twlink;
       this.newInstalink = this.UserInfo.instalink;
+      this.Picture = this.UserInfo.Picture;
 
       //const calc = data.rated / data.ratedusers;
       //this.ratedpreview = calc.toFixed(2); // /ove dvije linije su za prikaz ocjene, trneutno ne rade)
@@ -592,6 +571,7 @@ export default {
         fblink: this.newFBlink,
         twlink: this.newTwitterlink,
         instalink: this.newInstalink,
+        Picture: this.Picture,
       };
 
       console.log("NEWDATA", newData);
@@ -659,3 +639,9 @@ export default {
   },
 };
 </script>
+<style scoped>
+.Picture {
+  width: 240px;
+  height: 250px;
+}
+</style>

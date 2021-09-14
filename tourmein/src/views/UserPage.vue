@@ -10,7 +10,7 @@
                 type="text"
                 class="form-control"
                 placeholder="Search"
-                v-model="store.searchTerm"
+                v-model="store.search_text"
               />
               <!--<div id="charge" class="form-inline">
 								<label> Show only guides that charge: </label>
@@ -75,13 +75,10 @@
         </div>
       </div>
       <div class="row">
-        <div
-          class="form-group float-left"
-          v-if="this.store.searchTerm === ''"
-        ></div>
+        <div class="form-group float-left"></div>
       </div>
       <div class="row">
-        <user-card v-for="card in filteredCards" :key="card.url" :info="card" />
+        <user-card v-for="card in cards" :key="card.url" :info="card" />
       </div>
     </div>
   </div>
@@ -91,7 +88,8 @@
 import UserCard from "@/components/SearchGuide.vue";
 import store from "@/store";
 import { db } from "@/firebase";
-import { Auth, isGuide } from "../service/index.js";
+import { Auth, isGuide, GetGuides, Search } from "../service/index.js";
+import _ from "lodash";
 
 export default {
   name: "user_search",
@@ -105,7 +103,13 @@ export default {
       byMonument: "",
       byRating: "",
       byPrice: "",
+      search: [],
     };
+  },
+
+  created() {
+    this.fetchEmail();
+    this.getGuides();
   },
 
   mounted() {
@@ -117,75 +121,27 @@ export default {
       location.reload();
     }
   },
+
+  watch: {
+    "store.search_text": _.debounce(function(val) {
+      this.fetchEmail(val);
+    }, 500),
+  },
+
   methods: {
-    getGuides() {
+    async getGuides(term = "guide") {
       console.log("firebase dohvat...");
-
-      db.collection("user")
-        .where("guide", "==", "true")
-        .get()
-        .then((query) => {
-          this.cards = [];
-          query.forEach((doc) => {
-            const data = doc.data();
-
-            if (data.languages != null && data.monuments != null) {
-              this.cards.push({
-                id: doc.id,
-                name: data.firstname + " " + data.lastname,
-                monuments: data.monuments,
-                lang: data.languages,
-                email: data.email,
-                city: data.city,
-
-                starthour: data.starthour,
-                startminute: data.startminute,
-                endhour: data.endhour,
-                endminute: data.endminute,
-
-                monday: data.monday,
-                tuesday: data.tuesday,
-                wednesday: data.wednesday,
-                thursday: data.thursday,
-                friday: data.friday,
-                saturday: data.saturday,
-                sunday: data.sunday,
-
-                fb: data.fblink,
-                tw: data.twlink,
-                inst: data.instalink,
-
-                image: data.image,
-                ratedpreview: data.rated / data.ratedusers,
-                ratedusers: data.ratedusers,
-
-                costhour: data.costhour,
-                currency: data.currency,
-                costlandmark: data.costlandmark,
-              });
-            }
-          });
-        });
+      this.cards = await GetGuides.getAll(term);
+    },
+    async fetchEmail(term, guide = "guide") {
+      term = term || store.search_text;
+      this.cards = await Search.getAll(term, guide);
     },
   },
-  computed: {
-    filteredCards() {
-      // logika koja filtrira cards
-      let termin = this.store.searchTerm;
-
-      console.log(termin);
-
-      if (this.byHour.checked) {
-        return (item) => item.costhour.toLowerCase().includes(costhour);
-      }
-
-      return this.cards.filter(
-        (item) =>
-          item.name.toLowerCase().includes(termin.toLowerCase()) ||
-          item.monuments.toLowerCase().includes(termin.toLowerCase()) ||
-          item.lang.toLowerCase().includes(termin.toLowerCase()) ||
-          item.city.toLowerCase().includes(termin.toLowerCase())
-      );
+  watch: {
+    "store.search_text": function() {
+      //console.log("Promjenio sam se!", this.store.search_text);
+      this.fetchEmail();
     },
   },
   components: {
@@ -193,3 +149,9 @@ export default {
   },
 };
 </script>
+<style scoped>
+.Picture {
+  width: 240px;
+  height: 250px;
+}
+</style>

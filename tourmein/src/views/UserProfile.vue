@@ -3,35 +3,8 @@
     <div class="container">
       <div class="row">
         <div class="col-sm">
-          <croppa
-            v-if="image"
-            :width="200"
-            :height="200"
-            :show-loading="true"
-            :initial-image="image"
-            :show-remove-button="false"
-            v-model="imageReference"
-          ></croppa>
-          <croppa
-            v-if="imageisHere === null"
-            :width="200"
-            :height="200"
-            :show-loading="true"
-            v-model="imageReference"
-          ></croppa>
-          <croppa
-            v-else-if="imageisHere === undefined"
-            :width="200"
-            :height="200"
-            :show-loading="true"
-            v-model="imageReference"
-          ></croppa>
-          <a href="#" class="btn btn-primary" @click="addImage()">Save image</a>
-          <a href="#" class="btn btn-secondary" @click="removeImage()"
-            >Remove image</a
-          >
-
           <div class="form-group">
+            <img class="Picture mb-3" :src="Picture" />
             <label for="nameSurname">{{ firstname }} {{ lastname }}</label
             ><br />
             <label for="DOB">{{ dob }}</label
@@ -39,6 +12,15 @@
           </div>
         </div>
         <div class="col-fluid">
+          <div class="form-group ">
+            <label for="Picture">Post your picture URL</label>
+            <input
+              type="picture"
+              class="form-control"
+              id="Picture"
+              v-model="Picture"
+            />
+          </div>
           <div class="form-group">
             <label for="InputEmail">Email address</label>
             <input
@@ -136,7 +118,7 @@ export default {
       id: "",
       registered: "",
       newLanguages: "",
-
+      Picture: "",
       dob: "",
       iVisited: "",
       wouldVisit: "",
@@ -150,11 +132,14 @@ export default {
   methods: {
     async getUserInfo() {
       this.UserInfo = await isGuide.getOne(this.auth.userEmail);
+      this.firstname = this.UserInfo.firstname;
+      this.lastname = this.UserInfo.lastname;
       this.newPhoneNumber = this.UserInfo.phone;
       this.newLanguages = this.UserInfo.languages;
       this.iVisited = this.UserInfo.ivisited;
       this.wouldVisit = this.UserInfo.wouldvisit;
       this.newaboutMe = this.UserInfo.aboutme;
+      this.Picture = this.UserInfo.Picture;
     },
 
     saveNewInfo() {
@@ -164,6 +149,7 @@ export default {
         ivisited: this.iVisited,
         wouldvisit: this.wouldVisit,
         aboutme: this.newaboutMe,
+        Picture: this.Picture,
       };
       console.log("NEWDATA", newData);
 
@@ -228,3 +214,9 @@ export default {
   },
 };
 </script>
+<style scoped>
+.Picture {
+  width: 240px;
+  height: 250px;
+}
+</style>

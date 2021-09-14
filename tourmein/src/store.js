@@ -1,9 +1,9 @@
 export default {
-	searchTerm: '',
-	currentUser: null,
-	guideID: null,
-	isGuide: null,
-	tourInProgress: null,
-	selectedUser: null,
-	counter: 0,
+  search_text: "",
+  currentUser: null,
+  guideID: null,
+  isGuide: null,
+  tourInProgress: null,
+  selectedUser: null,
+  counter: 0,
 };
