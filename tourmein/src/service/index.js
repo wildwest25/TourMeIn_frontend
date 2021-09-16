@@ -1,7 +1,7 @@
 import axios from "axios";
 
 let Service = axios.create({
-  baseURL: "http://localhost:3000",
+  baseURL: "https://tourmeinbackend.herokuapp.com/",
   timeout: 6000,
   headers: { Accept: "application/json", "Content-Type": "application/json" },
 });
