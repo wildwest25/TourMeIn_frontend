@@ -78,7 +78,7 @@
         <div class="form-group float-left"></div>
       </div>
       <div class="row">
-        <user-card v-for="card in cards" :key="card.url" :info="card" />
+        <user-card v-for="card in cards" :key="card.id" :info="card" />
       </div>
     </div>
   </div>
@@ -103,7 +103,7 @@ export default {
       byMonument: "",
       byRating: "",
       byPrice: "",
-      search: [],
+      search: {},
     };
   },
 
@@ -141,6 +141,7 @@ export default {
   watch: {
     "store.search_text": function() {
       //console.log("Promjenio sam se!", this.store.search_text);
+
       this.fetchEmail();
     },
   },

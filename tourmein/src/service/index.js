@@ -2,9 +2,19 @@ import axios from "axios";
 
 let Service = axios.create({
   baseURL: "http://localhost:3000",
-  timeout: 3000,
+  timeout: 6000,
   headers: { Accept: "application/json", "Content-Type": "application/json" },
 });
+
+let tour = {
+  async getOne(email) {
+    let response = await Service.get(`/tour/${email}`);
+    let doc = response.data;
+    return {
+      accepted: doc.accepted,
+    };
+  },
+};
 
 let isGuide = {
   async getOne(email) {
@@ -187,10 +197,35 @@ let Search = {
     data = data.map((doc) => {
       return {
         city: doc.city,
+        firstname: doc.firstname,
+        lastname: doc.lastname,
+        Picture: doc.Picture,
+        languages: doc.languages,
+        monuments: doc.monuments,
+        costhour: doc.costhour,
+        perlandmark: doc.perlandmark,
+        costlandmark: doc.costlandmark,
+
+        starthour: doc.starthour,
+        startminute: doc.startminute,
+        endhour: doc.endhour,
+        endminute: doc.endminute,
+
+        monday: doc.monday,
+        tuesday: doc.tuesday,
+        wednesday: doc.wednesday,
+        thursday: doc.thursday,
+        friday: doc.friday,
+        saturday: doc.saturday,
+        sunday: doc.sunday,
+
+        fblink: doc.fblink,
+        twlink: doc.twlink,
+        instalink: doc.instalink,
       };
     });
     return data;
   },
 };
 
-export { Service, Auth, isGuide, GetGuides, Search };
+export { Service, Auth, isGuide, GetGuides, Search, tour };
