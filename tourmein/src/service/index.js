@@ -1,18 +1,76 @@
 import axios from "axios";
 
 let Service = axios.create({
-  baseURL: "https://tourmeinbackend.herokuapp.com/",
+  baseURL: "http://localhost:3000",
   timeout: 6000,
   headers: { Accept: "application/json", "Content-Type": "application/json" },
 });
 
 let tour = {
   async getOne(email) {
-    let response = await Service.get(`/tour/${email}`);
-    let doc = response.data;
-    return {
-      accepted: doc.accepted,
-    };
+    try {
+      let response = await Service.get(`/tour/${email}`);
+      let doc = response.data;
+      return {
+        accepted: doc.accepted,
+      };
+    } catch (e) {
+      console.log("Nema nista u tour kolekciji, zato je ovaj error", e);
+    }
+  },
+};
+
+let getRatedGuide = {
+  async getAll(rate) {
+    let response = await Service.get(`/rated/${rate}`);
+    let data = response.data;
+    data = data.map((doc) => {
+      return {
+        guidename: doc.guidename,
+        guideimage: doc.guideimage,
+        finishedAt: doc.finishedAt,
+        ratedwith: doc.ratedwith,
+      };
+    });
+    return data;
+  },
+};
+
+let notificationGuide = {
+  async getOne(email) {
+    try {
+      let response = await Service.get(`/tours/${email}`);
+      let doc = response.data;
+      return {
+        user: doc.user,
+        name: doc.name,
+        guidename: doc.guidename,
+        accepted: doc.accepted,
+        userimage: doc.userimage,
+        guideimage: doc.guideimage,
+      };
+    } catch (e) {
+      console.log(e);
+    }
+  },
+};
+
+let notificationUser = {
+  async getOne(email) {
+    try {
+      let response = await Service.get(`/tourss/${email}`);
+      let doc = response.data;
+      return {
+        user: doc.user,
+        name: doc.name,
+        guidename: doc.guidename,
+        accepted: doc.accepted,
+        userimage: doc.userimage,
+        guideimage: doc.guideimage,
+      };
+    } catch (e) {
+      console.log(e);
+    }
   },
 };
 
@@ -21,6 +79,7 @@ let isGuide = {
     let response = await Service.get(`/users/${email}`);
     let doc = response.data;
     return {
+      id: doc._id,
       isguide: doc.isguide,
       phone: doc.phone,
       languages: doc.languages,
@@ -228,4 +287,14 @@ let Search = {
   },
 };
 
-export { Service, Auth, isGuide, GetGuides, Search, tour };
+export {
+  Service,
+  Auth,
+  isGuide,
+  GetGuides,
+  Search,
+  tour,
+  notificationGuide,
+  notificationUser,
+  getRatedGuide,
+};

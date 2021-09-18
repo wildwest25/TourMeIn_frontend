@@ -2,12 +2,14 @@
   <div id="card" class="card text-left">
     <div class="row">
       <div class="col-sm">
-        <div id="card_text" style="width:70px;">{{ info.name }}</div>
+        <div id="card_text" style="width:70px;">
+          {{ info.firstname }} {{ info.lastname }}
+        </div>
         <div class="card-body p-0">
           <img
             class="card-img-top offset-1"
             style="width: 7rem;"
-            :src="info.Picture"
+            v-bind:src="info.Picture"
           />
         </div>
       </div>
@@ -27,7 +29,9 @@
           @click="startTouring"
           class="btn btn-primary"
         >
-          <div id="btn_txt">Start touring with this guide</div>
+          <div id="btn_txt">
+            Start touring with this guide
+          </div>
         </button>
       </div>
     </div>
@@ -130,24 +134,35 @@
 <script>
 import store from "@/store";
 import { db } from "@/firebase";
+import {
+  Auth,
+  isGuide,
+  GetGuides,
+  Search,
+  tour,
+  Service,
+  getGuidesInfo,
+} from "../service/index.js";
 
 export default {
   props: ["info"],
   name: "UserCard",
-  data: function() {
+  data() {
     return {
       store,
-
+      isAccepted: {},
       byHour: "",
       byMonument: "",
       byRating: "",
       byPrice: "",
       userFullname: "",
       userimage: "",
+      auth: Auth.state,
+      UserInfo: {},
     };
   },
   mounted() {
-    db.collection("user")
+    /*db.collection("user")
       .where("email", "==", store.currentUser)
       .get()
       .then((querySnapshot) => {
@@ -157,48 +172,54 @@ export default {
           this.userFullname = data.firstname + " " + data.lastname;
           this.userimage = data.image;
         });
-      });
+      });*/
+
+    this.getTour();
+    this.getUserInfo();
   },
   methods: {
+    async getTour() {
+      this.isAccepted = await tour.getOne(this.auth.userEmail);
+      console.log("Accepted", this.isAccepted.accepted);
+    },
+
+    async getUserInfo() {
+      this.UserInfo = await isGuide.getOne(this.auth.userEmail);
+    },
+
     startTouring() {
-      db.collection("tour")
-        .where("user", "==", store.currentUser)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            const data = doc.data();
+      // console.log(this.isAccepted.accepted);
+      if (this.isAccepted.accepted == "pending") {
+        store.tourInProgress = true;
+        //console.log("Tour in progress", store.tourInProgress);
+      }
 
-            console.log(data.accepted);
-            if (data.accepted != "rated") {
-              store.tourInProgress = true;
-            }
-          });
-        });
-
-      setTimeout((async) => {
-        const user = store.currentUser;
+      setTimeout(async () => {
+        const user = this.auth.userEmail;
         const guide = this.info.email;
-        const name = this.userFullname;
+        const name = this.info.firstname + this.info.lastname;
         console.log("tour in progress: ", store.tourInProgress);
         if (store.tourInProgress == null) {
-          db.collection("tour")
-            .add({
-              user: user,
-              guide: guide,
-              name: name,
-              guidename: this.info.name,
-              accepted: null,
-              guideimage: this.info.image,
-              userimage: this.userimage,
-            })
-            .then(() => {
-              console.log("spremljeno, doc");
+          let NewTour = {
+            id: this.info.id,
+            user: user,
+            guide: guide,
+            name: this.UserInfo.firstname,
+            guidename: name,
+            accepted: "pending",
+            guideimage: this.info.Picture,
+            //userimage: this.userimage,
+          };
+
+          console.log(NewTour);
+
+          Service.patch(`/tour/${this.auth.userEmail}`, NewTour).then(
+            (response) => {
+              console.log("spremljeno", response);
               alert("Request has been sent!");
               window.location.reload();
-            })
-            .catch((e) => {
-              console.error(e);
-            });
+            }
+          );
         } else {
           alert("There is already pending tour request!");
         }
