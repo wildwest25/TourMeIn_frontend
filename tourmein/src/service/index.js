@@ -1,7 +1,7 @@
 import axios from "axios";
 
 let Service = axios.create({
-  baseURL: "http://localhost:3000",
+  baseURL: "https://tourmeinbackend.herokuapp.com/",
   timeout: 6000,
   headers: { Accept: "application/json", "Content-Type": "application/json" },
 });
@@ -21,14 +21,37 @@ let tour = {
 };
 
 let getRatedGuide = {
-  async getAll(rate) {
-    let response = await Service.get(`/rated/${rate}`);
+  async getAll(email) {
+    let response = await Service.get(`/rated/${email}`);
     let data = response.data;
     data = data.map((doc) => {
       return {
+        user: doc.user,
+        guide: doc.guide,
+        name: doc.name,
+        accepted: doc.accepted,
+        userimage: doc.userimage,
+        id: doc.id,
+        createdAt: doc.createdAt,
+        rated: doc.rated,
         guidename: doc.guidename,
         guideimage: doc.guideimage,
         finishedAt: doc.finishedAt,
+        ratedwith: doc.ratedwith,
+      };
+    });
+    return data;
+  },
+};
+
+let getFinishedTours = {
+  async getAll(rate) {
+    let response = await Service.get(`/finishedTour/${rate}`);
+    let data = response.data;
+    data = data.map((doc) => {
+      return {
+        user: doc.user,
+        guide: doc.guide,
         ratedwith: doc.ratedwith,
       };
     });
@@ -50,7 +73,7 @@ let notificationGuide = {
         guideimage: doc.guideimage,
       };
     } catch (e) {
-      console.log(e);
+      console.log("NIsi ulogiran sa dobrim mailom");
     }
   },
 };
@@ -69,7 +92,7 @@ let notificationUser = {
         guideimage: doc.guideimage,
       };
     } catch (e) {
-      console.log(e);
+      console.log("Nisi ulogiran sa dobrim mailom");
     }
   },
 };
@@ -297,4 +320,5 @@ export {
   notificationGuide,
   notificationUser,
   getRatedGuide,
+  getFinishedTours,
 };

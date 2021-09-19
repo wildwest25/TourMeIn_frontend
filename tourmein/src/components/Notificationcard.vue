@@ -263,7 +263,7 @@ export default {
     accept() {
       let NewTour = {
         accepted: "accepted",
-        createdAt: new Date(),
+        createdAt: new Date().toLocaleString(),
         //userimage: this.userimage,
       };
 
@@ -276,6 +276,7 @@ export default {
       });
     },
     deny() {
+      console.log(this.data.id);
       let NewTour = {
         id: this.data.id,
         guide: "",
@@ -319,11 +320,53 @@ export default {
 
       Service.patch(`/tour/${this.auth.userEmail}`, NewTour).then(
         (response) => {
-          console.log("Rated", response);
+          console.log("Rated", response.data);
           alert(
             `Tour has ended with ${this.info.guidename}, you rated guide with ${this.rating}`
           );
-          window.location.reload();
+          let prebaci = {
+            user: this.auth.userEmail,
+            guide: response.data.guide,
+            name: response.data.name,
+            accepted: response.data.accepted,
+            userimage: response.data.userimage,
+            createdAt: response.data.createdAt,
+            rated: response.data.rated,
+            guidename: response.data.guidename,
+            guideimage: response.data.guideimage,
+            finishedAt: response.data.finishedAt,
+            ratedwith: response.data.ratedwith,
+          };
+
+          Service.post(`/finishtour/${this.auth.userEmail}`, prebaci).then(
+            (res) => {
+              console.log(res);
+
+              let VratiNaStaro = {
+                id: null,
+                user: this.auth.userEmail,
+                guide: "",
+                name: "",
+                accepted: "waiting",
+                userimage: "",
+                createdAt: null,
+                rated: null,
+                guidename: "",
+                guideimage: "",
+                finishedAt: null,
+                ratedwith: "",
+              };
+
+              Service.patch(`/tour/${this.auth.userEmail}`, VratiNaStaro).then(
+                (resp) => {
+                  console.log(resp);
+                }
+              );
+            }
+          );
+          setTimeout(function() {
+            location.reload();
+          }, 3000);
         }
       );
     },

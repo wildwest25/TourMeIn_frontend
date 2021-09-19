@@ -88,7 +88,13 @@
 import UserCard from "@/components/SearchGuide.vue";
 import store from "@/store";
 import { db } from "@/firebase";
-import { Auth, isGuide, GetGuides, Search } from "../service/index.js";
+import {
+  Auth,
+  isGuide,
+  GetGuides,
+  Search,
+  getFinishedTours,
+} from "../service/index.js";
 import _ from "lodash";
 
 export default {
@@ -104,6 +110,7 @@ export default {
       byRating: "",
       byPrice: "",
       search: {},
+      rating: {},
     };
   },
 
@@ -130,7 +137,6 @@ export default {
 
   methods: {
     async getGuides(term = "guide") {
-      console.log("firebase dohvat...");
       this.cards = await GetGuides.getAll(term);
     },
     async fetchEmail(term, guide = "guide") {

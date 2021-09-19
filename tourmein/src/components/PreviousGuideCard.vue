@@ -21,12 +21,28 @@
       </div>
       <div class="col-sm"></div>
     </div>
+
+    <button
+      @click="deleteCard(info.id)"
+      style="max-width:100px"
+      type="button"
+      class="btn btn-danger"
+    >
+      Delete
+    </button>
   </div>
 </template>
 
 <script>
 //JS kod
 import { db } from "@/firebase";
+import {
+  isGuide,
+  Auth,
+  notificationGuide,
+  getRatedGuide,
+  Service,
+} from "../service/index.js";
 
 export default {
   props: ["info"],
@@ -46,7 +62,14 @@ export default {
     console.log(this.info);
   },
 
-  methods: {},
+  methods: {
+    deleteCard(id) {
+      Service.post(`/deleteFnished/${id}`).then((response) => {
+        console.log(response);
+        location.reload();
+      });
+    },
+  },
 };
 </script>
 

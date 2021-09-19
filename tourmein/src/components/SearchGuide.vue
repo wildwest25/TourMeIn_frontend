@@ -16,8 +16,8 @@
       <div class="col-sm">
         <div id="card_text_Star">
           <img src=@/assets/A_star.png height=30% width=30% />
-          <div v-if="info.ratedusers >= 3" id="star_text">
-            {{ info.ratedpreview.toFixed(2) }}
+          <div v-if="counter >= 3" id="star_text">
+            {{ avg.toFixed(2) }}
           </div>
           <div v-else id="star_text" style="font-size:17px;">
             Not enough ratings.
@@ -142,6 +142,7 @@ import {
   tour,
   Service,
   getGuidesInfo,
+  getFinishedTours,
 } from "../service/index.js";
 
 export default {
@@ -159,6 +160,10 @@ export default {
       userimage: "",
       auth: Auth.state,
       UserInfo: {},
+      rating: {},
+      counter: 0,
+      total: 0,
+      avg: 0,
     };
   },
   mounted() {
@@ -176,8 +181,23 @@ export default {
 
     this.getTour();
     this.getUserInfo();
+    this.getRating();
   },
   methods: {
+    async getRating() {
+      this.rating = await getFinishedTours.getAll(this.info.email);
+      this.rating.forEach((doc) => {
+        //console.log(doc.ratedwith);
+        this.total += doc.ratedwith;
+        this.counter = this.counter + 1;
+      });
+      //console.log("total", total);
+      // console.log("counter", counter);
+
+      this.avg = this.total / this.counter;
+      console.log("avg", this.avg.toFixed(2));
+    },
+
     async getTour() {
       this.isAccepted = await tour.getOne(this.auth.userEmail);
       console.log("Accepted", this.isAccepted.accepted);

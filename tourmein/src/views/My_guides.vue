@@ -30,14 +30,15 @@ export default {
     return {
       cards: {},
       store,
+      auth: Auth.state,
     };
   },
   mounted() {
     this.getPrevTours();
   },
   methods: {
-    async getPrevTours(term = "rated") {
-      this.cards = await getRatedGuide.getAll(term);
+    async getPrevTours() {
+      this.cards = await getRatedGuide.getAll(this.auth.userEmail);
       console.log("previusguidecard", this.cards);
     },
   },

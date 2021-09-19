@@ -8,10 +8,10 @@
             <label for="nameSurname">{{ firstname }} {{ lastname }}</label
             ><br />
             <!-- <label-- for="DOB">{{ dob }}</label-->
-            ><br />
+            <br />
             <label for="rating">
               <img src=@/assets/A_star.png height=15% width=15% />{{
-                ratedpreview
+                avg.toFixed(2)
               }}</label
             >
           </div>
@@ -443,7 +443,7 @@
 <script>
 import store from "@/store";
 import { db, storage } from "@/firebase"; // osim db ovdje importamo i storage jer su u njemu spremljene slike profila
-import { Auth, isGuide, Service } from "../service/index.js";
+import { Auth, isGuide, Service, getFinishedTours } from "../service/index.js";
 
 export default {
   name: "Guide_functions",
@@ -451,6 +451,11 @@ export default {
     //postavljanje praznih vrijednosti za unos podataka na stranici
     return {
       auth: Auth.state,
+
+      rating: {},
+      counter: 0,
+      total: 0,
+      avg: 0,
 
       store,
       image: null,
@@ -492,6 +497,7 @@ export default {
   },
   mounted() {
     this.getUserInfo();
+    this.getRating();
 
     if (localStorage.getItem("reloaded")) {
       localStorage.removeItem("reloaded");
@@ -501,6 +507,19 @@ export default {
     }
   },
   methods: {
+    async getRating() {
+      this.rating = await getFinishedTours.getAll(this.auth.userEmail);
+      this.rating.forEach((doc) => {
+        //console.log(doc.ratedwith);
+        this.total += doc.ratedwith;
+        this.counter = this.counter + 1;
+      });
+      //console.log("total", total);
+      // console.log("counter", counter);
+
+      this.avg = this.total / this.counter;
+      console.log("avg", this.avg.toFixed(2));
+    },
     //za dohvaćanje podataka sa Firebasea
     async getUserInfo() {
       console.log("Dohvat podataka s MongoDB-a...");
@@ -582,59 +601,6 @@ export default {
           this.$router.go();
         }
       );
-    },
-
-    addImage() {
-      this.imageReference.generateBlob((blobData) => {
-        //spremanje slike u prikladni "blob" format
-        let imageName = "profile_image/" + store.currentUser + ".png";
-        //let imageName = store.currentUser + '_' + Date.now() + '.png';
-        console.log(imageName);
-
-        storage
-          .ref(imageName)
-          .put(blobData) //funkcija koja se koristi za storage spremanje slike u blob-u
-          .then((result) => {
-            // ... uspjesna linija
-            console.log(result);
-            result.ref
-              .getDownloadURL()
-              .then((url) => {
-                console.log(url);
-
-                db.collection("user")
-                  .doc(this.id)
-                  .update({
-                    image: url,
-                  })
-                  .then(() => {
-                    console.log("spremljena slika, doc"); //potvrda da je slika spremljena
-                    alert("Image uploaded!");
-                  })
-                  .catch((e) => {
-                    console.error(e);
-                  });
-              })
-              .catch((e) => {
-                console.error(e);
-              });
-          })
-          .catch((e) => {
-            console.error(e);
-          });
-      });
-    },
-    removeImage() {
-      this.imageReference.remove();
-
-      db.collection("user")
-        .doc(this.id)
-        .update({
-          image: null,
-        })
-        .then(() => {
-          console.log("slika izbrisana, doc"); //Potvrda da je slika izbrisana
-        });
     },
   },
 };

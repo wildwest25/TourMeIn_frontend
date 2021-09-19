@@ -391,7 +391,7 @@ export default {
             );
             console.log("Rezultat registracije", uspjeh);
             if (uspjeh == true) {
-              this.$router.push({ path: "/" });
+              this.$router.push({ path: "/registracija_uspjesna" });
             }
           } catch (e) {
             this.feedback = true;
