@@ -99,7 +99,7 @@ export default {
 
   mounted() {
     this.callBackendGuide();
-    console.log("Ovo bi se trebalo ucitat kad stisnem login al jede govna ");
+    console.log("Ovo bi se trebalo ucitat kad stisnem login ali...");
   },
 
   methods: {
