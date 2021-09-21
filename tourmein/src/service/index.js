@@ -15,16 +15,6 @@ Service.interceptors.request.use((request) => {
   return request;
 });
 
-Service.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response.status == 401) {
-      Auth.logout();
-      $router.go();
-    }
-  }
-);
-
 let tour = {
   async getOne(email) {
     try {
