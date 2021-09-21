@@ -35,14 +35,7 @@
 
 <script>
 //JS kod
-import { db } from "@/firebase";
-import {
-  isGuide,
-  Auth,
-  notificationGuide,
-  getRatedGuide,
-  Service,
-} from "../service/index.js";
+import { Service } from "../service/index.js";
 
 export default {
   props: ["info"],

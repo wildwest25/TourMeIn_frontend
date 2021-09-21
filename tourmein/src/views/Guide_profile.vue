@@ -442,7 +442,6 @@
 </template>
 <script>
 import store from "@/store";
-import { db, storage } from "@/firebase"; // osim db ovdje importamo i storage jer su u njemu spremljene slike profila
 import { Auth, isGuide, Service, getFinishedTours } from "../service/index.js";
 
 export default {
@@ -450,7 +449,7 @@ export default {
   data: function() {
     //postavljanje praznih vrijednosti za unos podataka na stranici
     return {
-      auth: Auth.state,
+      auth: Auth.state, //dohvaća email u input field email
 
       rating: {},
       counter: 0,
@@ -520,7 +519,7 @@ export default {
       this.avg = this.total / this.counter;
       console.log("avg", this.avg.toFixed(2));
     },
-    //za dohvaćanje podataka sa Firebasea
+
     async getUserInfo() {
       console.log("Dohvat podataka s MongoDB-a...");
       this.UserInfo = await isGuide.getOne(this.auth.userEmail);
@@ -557,9 +556,6 @@ export default {
       this.newTwitterlink = this.UserInfo.twlink;
       this.newInstalink = this.UserInfo.instalink;
       this.Picture = this.UserInfo.Picture;
-
-      //const calc = data.rated / data.ratedusers;
-      //this.ratedpreview = calc.toFixed(2); // /ove dvije linije su za prikaz ocjene, trneutno ne rade)
     },
 
     saveNewInfo() {

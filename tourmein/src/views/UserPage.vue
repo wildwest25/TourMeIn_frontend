@@ -12,60 +12,6 @@
                 placeholder="Search"
                 v-model="store.search_text"
               />
-              <!--<div id="charge" class="form-inline">
-								<label> Show only guides that charge: </label>
-								<div>
-									<input
-										type="checkbox"
-										v-model="byHour"
-										name="gen"
-										id="male"
-										value="male"
-										style="width: 20px"
-										class="form-control"
-									/>
-								</div>
-								<label> By Hour </label>
-								<div>
-									<input
-										type="checkbox"
-										v-model="byMonument"
-										name="gen"
-										id="female"
-										value="female"
-										style="width: 20px"
-										class="form-control"
-									/>
-								</div>
-								<label> By Monument</label>
-							</div>
-							<div id="sorts" class="form-inline">
-								<label> Sort by: </label>
-								<div>
-									<input
-										type="radio"
-										v-model="byRating"
-										name="gen"
-										id="other"
-										value="other"
-										style="width: 20px"
-										class="form-control"
-									/>
-								</div>
-								<label> Rating </label>
-								<div style="margin-left:12px;">
-									<input
-										type="radio"
-										v-model="byPrice"
-										name="gen"
-										id="other"
-										value="other"
-										style="width: 20px"
-										class="form-control"
-									/>
-								</div>
-								<label> Price </label>
-							</div>-->
             </div>
             <div class="form-outline" style="width:1000;"></div>
             <!--<button id="Search-butt" type="button" class="btn btn-primary" @click="filteredCards">
@@ -87,14 +33,8 @@
 // @ is an alias to /src
 import UserCard from "@/components/SearchGuide.vue";
 import store from "@/store";
-import { db } from "@/firebase";
-import {
-  Auth,
-  isGuide,
-  GetGuides,
-  Search,
-  getFinishedTours,
-} from "../service/index.js";
+
+import { Auth, GetGuides, Search } from "../service/index.js";
 import _ from "lodash";
 
 export default {

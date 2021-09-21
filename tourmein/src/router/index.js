@@ -1,6 +1,5 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import store from "@/store";
 import { Auth } from "../service/index.js";
 
 Vue.use(VueRouter);
@@ -49,22 +48,7 @@ const routes = [
     },
     component: () => import("../views/Notifications.vue"),
   },
-  {
-    path: "/messages",
-    name: "Messages",
-    meta: {
-      needsUser: true,
-    },
-    component: () => import("../views/Messages.vue"),
-  },
-  {
-    path: "/msg_preview",
-    name: "Msg_preview",
-    meta: {
-      needsUser: true,
-    },
-    component: () => import("../views/Msg_preview.vue"),
-  },
+
   {
     path: "/user_profile",
     name: "User_profile",

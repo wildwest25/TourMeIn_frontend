@@ -6,6 +6,25 @@ let Service = axios.create({
   headers: { Accept: "application/json", "Content-Type": "application/json" },
 });
 
+Service.interceptors.request.use((request) => {
+  try {
+    request.headers["Authorization"] = "Bearer " + Auth.getToken();
+  } catch (e) {
+    console.error(e);
+  }
+  return request;
+});
+
+Service.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response.status == 401) {
+      Auth.logout();
+      $router.go();
+    }
+  }
+);
+
 let tour = {
   async getOne(email) {
     try {

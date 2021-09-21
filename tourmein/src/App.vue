@@ -23,8 +23,6 @@
         <router-link to="/notifications">Notifications</router-link>
         <!-- <div v-if="store.counter" id="MSGCount">{{ store.counter }}</div>-->
         |
-        <router-link to="/messages">Messages</router-link> |
-        <router-link to="/events">Map and Events</router-link>
 
         <ul class="navbar-nav ml-auto">
           <li class="nav-item">
@@ -59,7 +57,7 @@
         <router-link to="/notifications">Notifications</router-link>
         <!--<div v-if="store.counter" id="MSGCount">{{ store.counter }}</div>-->
         |
-        <router-link to="/messages">Messages</router-link> |
+
         <router-link to="/events">Map and Events</router-link>
 
         <ul class="navbar-nav ml-auto">
@@ -83,8 +81,6 @@
 
 <script>
 import store from "@/store";
-import { firebase, db } from "@/firebase";
-import router from "@/router";
 import { Auth, isGuide } from "../src/service/index.js";
 
 export default {

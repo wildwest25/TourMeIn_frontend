@@ -60,15 +60,11 @@
             <button type="button" @click="login()" class="btn btn-primary">
               Log In
             </button>
-            <button id="Mobile" type="button" class="btn btn-primary">
-              Mobile Page (Inactive)
-            </button>
           </form>
           <br />
           <form method="get" action="/register">
             <button type="submit" class="btn btn-primary">Register</button>
           </form>
-          <a href="#" @click="forgotpassword()">Forgot Password?</a>
         </div>
         <div class="col-sm"></div>
       </div>
@@ -76,7 +72,6 @@
   </div>
 </template>
 <script>
-import { firebase } from "@/firebase";
 import SimpleVueValidation from "simple-vue-validator";
 import { Auth, isGuide } from "../service/index.js";
 const Validator = SimpleVueValidation.Validator;
@@ -129,19 +124,6 @@ export default {
           console.error("Nisu sva polja unesena za login, error");
         }
       });
-    },
-
-    forgotpassword() {
-      var auth = firebase.auth();
-      var emailAddress = this.email;
-      auth
-        .sendPasswordResetEmail(emailAddress)
-        .then(function() {
-          alert("Password reset email has been sent, check your inbox");
-        })
-        .catch(function(error) {
-          // An error happened.
-        });
     },
   },
 };

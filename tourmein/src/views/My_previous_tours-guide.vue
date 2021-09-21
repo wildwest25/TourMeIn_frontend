@@ -14,14 +14,8 @@
 // @ is an alias to /src
 import UserCard from "@/components/PreviousTourCard.vue";
 import store from "@/store";
-import { db } from "@/firebase";
-import {
-  isGuide,
-  Auth,
-  notificationGuide,
-  getRatedGuide,
-  Service,
-} from "../service/index.js";
+
+import { Auth, getRatedGuide } from "../service/index.js";
 
 export default {
   name: "My_Guides",
@@ -34,7 +28,6 @@ export default {
     };
   },
   mounted() {
-    //* dohvat iz Firebasea
     this.getPrevTours();
   },
   methods: {

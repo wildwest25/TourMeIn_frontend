@@ -10,6 +10,7 @@
             :key="card.url"
             :info="card"
           />
+          <!--:info="card" je prop koji koristim u notificationcard komponenti -->
           <!--izlistava sve notifikacije-->
         </div>
       </div>
@@ -19,12 +20,10 @@
 <script>
 import PreviousGuideCard from "@/components/Notificationcard.vue";
 import store from "@/store";
-import { db } from "@/firebase";
+
 import {
   Auth,
   isGuide,
-  GetGuides,
-  Search,
   notificationGuide,
   notificationUser,
 } from "../service/index.js";
@@ -43,7 +42,7 @@ export default {
   },
   mounted() {
     this.getGuide();
-    //* dohvat iz Firebasea ovisno o tipu usera
+    //* dohvat iz MongoDb-a ovisno o tipu usera
   },
   methods: {
     async getGuide() {

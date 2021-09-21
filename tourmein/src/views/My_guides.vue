@@ -14,14 +14,8 @@
 // @ is an alias to /src
 import UserCard from "@/components/PreviousGuideCard.vue";
 import store from "@/store";
-import { db } from "@/firebase";
-import {
-  isGuide,
-  Auth,
-  notificationGuide,
-  getRatedGuide,
-  Service,
-} from "../service/index.js";
+
+import { Auth, getRatedGuide } from "../service/index.js";
 
 export default {
   name: "My_Guides",
@@ -42,14 +36,7 @@ export default {
       console.log("previusguidecard", this.cards);
     },
   },
-  /* computed: {
-    filteredCards() {
-      // logika koja filtrira cards
-      let termin = this.store.searchTerm;
 
-      return this.cards;
-    },
-  },*/
   components: {
     UserCard,
   },

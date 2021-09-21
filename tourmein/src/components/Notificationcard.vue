@@ -202,15 +202,8 @@
 
 <script>
 import store from "@/store";
-import { db, firebase } from "@/firebase";
 import { StarRating } from "vue-rate-it";
-import {
-  isGuide,
-  Auth,
-  notificationGuide,
-  notificationUser,
-  Service,
-} from "../service/index.js";
+import { isGuide, Auth, Service } from "../service/index.js";
 
 export default {
   components: {
@@ -336,7 +329,7 @@ export default {
             guideimage: response.data.guideimage,
             finishedAt: response.data.finishedAt,
             ratedwith: response.data.ratedwith,
-          };
+          }; //prebacuje u kolekciju finishedTours
 
           Service.post(`/finishtour/${this.auth.userEmail}`, prebaci).then(
             (res) => {
@@ -355,7 +348,7 @@ export default {
                 guideimage: "",
                 finishedAt: null,
                 ratedwith: "",
-              };
+              }; //vraca na pocetne vrijednosti u tours kolekciji kako bi se mogao zatraziti novi guide
 
               Service.patch(`/tour/${this.auth.userEmail}`, VratiNaStaro).then(
                 (resp) => {

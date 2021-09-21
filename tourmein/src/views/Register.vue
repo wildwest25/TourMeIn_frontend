@@ -283,8 +283,6 @@ https://github.com/silviomoreto/bootstrap-select/issues/1135
 </template>
 
 <script>
-import { firebase, db } from "@/firebase";
-import store from "@/store";
 import SimpleVueValidation from "simple-vue-validator";
 import { Auth } from "../service/index.js";
 const Validator = SimpleVueValidation.Validator;
@@ -402,40 +400,6 @@ export default {
         }
       });
     },
-
-    /*signup() {
-      this.$validate().then((success) => {
-        if (success) {
-          firebase
-            .auth()
-            .createUserWithEmailAndPassword(this.email, this.password)
-            .then(function() {
-              console.log("Uspjesna registracija");
-
-              var user = firebase.auth().currentUser;
-
-              user
-
-                .sendEmailVerification() //to do
-                .then(function() {})
-                .catch(function(error) {
-                  // An error happened.
-                });
-              firebase
-								.auth()
-								.signOut()
-								.then(() => {
-									store.isGuide = null;
-								});
-            })
-            .catch(function(error) {
-              console.error("Doslo je do greske, error");
-            });
-        } else {
-          console.error("User nije kreiran, error");
-        }
-      });
-    },*/
   },
 };
 

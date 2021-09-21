@@ -9,7 +9,7 @@
           <img
             class="card-img-top offset-1"
             style="width: 7rem;"
-            v-bind:src="info.Picture"
+            :src="info.Picture"
           />
         </div>
       </div>
@@ -133,15 +133,11 @@
 
 <script>
 import store from "@/store";
-import { db } from "@/firebase";
 import {
   Auth,
   isGuide,
-  GetGuides,
-  Search,
   tour,
   Service,
-  getGuidesInfo,
   getFinishedTours,
 } from "../service/index.js";
 
@@ -167,18 +163,6 @@ export default {
     };
   },
   mounted() {
-    /*db.collection("user")
-      .where("email", "==", store.currentUser)
-      .get()
-      .then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          const data = doc.data();
-
-          this.userFullname = data.firstname + " " + data.lastname;
-          this.userimage = data.image;
-        });
-      });*/
-
     this.getTour();
     this.getUserInfo();
     this.getRating();
@@ -201,7 +185,7 @@ export default {
     async getTour() {
       this.isAccepted = await tour.getOne(this.auth.userEmail);
       console.log("Accepted", this.isAccepted.accepted);
-    },
+    }, //gleda da li je pending, waiting...
 
     async getUserInfo() {
       this.UserInfo = await isGuide.getOne(this.auth.userEmail);

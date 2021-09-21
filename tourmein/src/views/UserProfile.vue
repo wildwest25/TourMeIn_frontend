@@ -99,7 +99,6 @@
 <script>
 // @ is an alias to /src
 import store from "@/store";
-import { db, storage } from "@/firebase";
 import { Auth, isGuide, Service } from "../service/index.js";
 
 export default {
@@ -159,57 +158,6 @@ export default {
           this.$router.go();
         }
       );
-    },
-    addImage() {
-      this.imageReference.generateBlob((blobData) => {
-        let imageName = "profile_image/" + store.currentUser + ".png";
-        //let imageName = store.currentUser + '_' + Date.now() + '.png';
-        console.log(imageName);
-
-        storage
-          .ref(imageName)
-          .put(blobData)
-          .then((result) => {
-            // ... uspjesna linija
-            console.log(result);
-            result.ref
-              .getDownloadURL()
-              .then((url) => {
-                console.log(url);
-
-                db.collection("user")
-                  .doc(this.id)
-                  .update({
-                    image: url,
-                  })
-                  .then(() => {
-                    console.log("spremljena slika, doc");
-                    alert("Image uploaded!");
-                  })
-                  .catch((e) => {
-                    console.error(e);
-                  });
-              })
-              .catch((e) => {
-                console.error(e);
-              });
-          })
-          .catch((e) => {
-            console.error(e);
-          });
-      });
-    },
-    removeImage() {
-      this.imageReference.remove();
-
-      db.collection("user")
-        .doc(this.id)
-        .update({
-          image: null,
-        })
-        .then(() => {
-          console.log("slika izbrisana, doc");
-        });
     },
   },
 };
